@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
-import { click, visit, currentURL } from '@ember/test-helpers';
+import { click, visit, currentURL, waitFor } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-
 module('Acceptance | super rentals', function (hooks) {
   setupApplicationTest(hooks);
 

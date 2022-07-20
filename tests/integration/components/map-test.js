@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'super-rentals/tests/helpers';
-import { find, render } from '@ember/test-helpers';
+import { render, find, waitFor, waitUntil} from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
+import ENV from 'super-rentals/config/environment';
 module('Integration | Component | map', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -25,6 +26,13 @@ module('Integration | Component | map', function (hooks) {
     .hasAttribute('height', '150');
     
     let { src } = find('.map img'); //El find es un helper para encontrar elementos en el DOM
+    await waitFor('[id="pruebatest"]');
+    assert.ok(src, 'El elemento con ID "pruebatest" existe');
+    await waitFor('img');
+    assert.ok(src, 'Existe un elemento en el DOM que tiene la etiqueta IMG');
+    //assert.dom('[id="pruebatest"]').exists({ count: 0 }); FALLA PORQUE HAY 1 ELEMENTO
+    assert.dom('[id="pruebatest"]').exists({ count: 1 });
+    
     /**
      *... Normalmente cuando tengas errores del tipo 'Cannot read properties of undefined' lo nromal es que esté fallando la asignación de esa variable, puedes ir debugeando de forma que
           utilizando el mismo console.log o el inspector del navegador (a tu parecer) puedas ir viendo el valor de la variable, normalmente si te da ese error mencionado es porque la variable
@@ -44,10 +52,12 @@ module('Integration | Component | map', function (hooks) {
       src.includes('3'),
       '===> TEST (Parameters): The src should include the x, y, z parameters'
     );
+    
+
 
 
   });
-
+ 
   /** ===================== U P D A T E    T E S T S =====================  **/
 
   //
@@ -56,8 +66,8 @@ module('Integration | Component | map', function (hooks) {
       x: 5,
       y: 2,
       z: 4,
-      width: 120,
-      height: 120,
+      width: 520,
+      height: 520,
     });
 
     await render(hbs`<Map
@@ -67,19 +77,39 @@ module('Integration | Component | map', function (hooks) {
       @width={{this.width}}
       @height={{this.height}}
     />`);
-
+    
     let img = find('.map img');
 
     assert.ok(
       img.src.includes('5'),
-      'the src should include the lng,lat,zoom parameter'
+      'the src should include the x parameter'
     );
     
     assert.ok(
-      img.src.includes('120'),
-      'the src should include the width,height and @2x parameter'
+      img.src.includes('2'),
+      'the src should include the y parameter'
     );
-    await this.pauseTest()
+    await render(hbs`<h1>Hello World</h1>`);  
+    
+  });
 
+  test('it shows the notification for the configured period of time', async function(assert) {
+    render(hbs`<h1>Hello World</h1>`);
+    await waitUntil(() => {
+      let kapasao = true;
+      if (kapasao) {
+        kapasao = true;
+        render(hbs`<h1>Hello true</h1>`);
+      }else{
+        kapasao = false;
+        render(hbs`<h1>Goodbye false</h1>`);
+      }
+
+    });
+    this.clock.tick(3000);
+    assert.ok(labelIsVisible(), 'Message is shown when element is added');
+ 
+    this.clock.tick(3000);
+    assert.notOk(labelIsVisible(), 'The text is automatically hidden after timeout value.');
   });
 });
