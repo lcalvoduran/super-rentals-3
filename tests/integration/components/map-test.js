@@ -27,8 +27,19 @@ module('Integration | Component | map', function (hooks) {
     
     let { src } = find('.map img'); //El find es un helper para encontrar elementos en el DOM
     await waitFor('[id="pruebatest"]');
+    
     assert.ok(src, 'El elemento con ID "pruebatest" existe');
-    await waitFor('img');
+    await waitFor('img', { count: 1});
+
+    await waitUntil( () => {
+      let finder = find('.map img');
+      console.log("El finder: " + finder)
+      if (finder) {
+        return true;
+      }else{
+        return false;
+      }
+    })
     assert.ok(src, 'Existe un elemento en el DOM que tiene la etiqueta IMG');
     //assert.dom('[id="pruebatest"]').exists({ count: 0 }); FALLA PORQUE HAY 1 ELEMENTO
     assert.dom('[id="pruebatest"]').exists({ count: 1 });
@@ -93,23 +104,4 @@ module('Integration | Component | map', function (hooks) {
     
   });
 
-  test('it shows the notification for the configured period of time', async function(assert) {
-    render(hbs`<h1>Hello World</h1>`);
-    await waitUntil(() => {
-      let kapasao = true;
-      if (kapasao) {
-        kapasao = true;
-        render(hbs`<h1>Hello true</h1>`);
-      }else{
-        kapasao = false;
-        render(hbs`<h1>Goodbye false</h1>`);
-      }
-
-    });
-    this.clock.tick(3000);
-    assert.ok(labelIsVisible(), 'Message is shown when element is added');
- 
-    this.clock.tick(3000);
-    assert.notOk(labelIsVisible(), 'The text is automatically hidden after timeout value.');
-  });
 });
